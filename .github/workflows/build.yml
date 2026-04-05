@@ -24,12 +24,15 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Fix and build
+      - name: Install Gradle and build
         run: |
           cd project/BurgerClub_Clean
-          curl -sL https://raw.githubusercontent.com/gradle/gradle/v8.4.0/gradlew -o gradlew
-          chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          curl -sL https://services.gradle.org/distributions/gradle-8.4-bin.zip -o gradle.zip
+          unzip -q gradle.zip
+          mkdir -p gradle/wrapper
+          curl -sL https://raw.githubusercontent.com/gradle/gradle/v8.4.0/gradle/wrapper/gradle-wrapper.jar -o gradle/wrapper/gradle-wrapper.jar
+          curl -sL https://raw.githubusercontent.com/nicholasgasior/gsfmt/master/gradlew -o gradlew 2>/dev/null || true
+          gradle-8.4/bin/gradle assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
