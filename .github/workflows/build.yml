@@ -12,13 +12,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Show files
-        run: ls -la
-
       - name: Unzip project
-        run: |
-          unzip *.zip -d project
-          find project -name "gradlew" | head -5
+        run: unzip *.zip -d project
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -31,14 +26,11 @@ jobs:
 
       - name: Build APK
         run: |
-          BUILD_DIR=$(find project -name "gradlew" -exec dirname {} \; | head -1)
-          echo "Building in: $BUILD_DIR"
-          cd "$BUILD_DIR"
-          chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          cd project/BurgerClub_Clean
+          bash gradlew assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: BurgerClub-debug
-          path: "**/app-debug.apk"
+          path: project/BurgerClub_Clean/app/build/outputs/apk/debug/app-debug.apk
